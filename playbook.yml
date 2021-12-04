@@ -1,0 +1,46 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: "Install Java"
+      command: yum install java -y
+    - name: "finding the java home path"
+      command: find /usr/lib/jvm/java* | head -n 3
+      register: outtt
+    - name: "Java Home Path is"
+      debug: var=outtt.stdout_lines
+    - name: "Removing the .bash_profile file under ~"
+      command: sudo rm ~/google
+    - name: "setting up Java & Maven Home path "
+      command: cp /.bash_profile ~
+    - name: "Downloading Jenkins from Public Jenkins repository"
+      command: sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    - name: "Downloading 1"
+      command: sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+    - name: "Installing Jenkins dependency package called epel"
+      Command: sudo amazon-linux-extras install epel -y
+    - name: "Installing Jenkins"
+      Command: yum install jenkins -y
+    - name: "Starting Jenkins service"
+      Command: service jenkins start
+    - name: "checking Jenkins service status"
+      Command: service jenkins status
+      register: catboyy
+    - name: "Displaying Jenkins service status"
+      debug: var=catboyy.stdout_lines
+    - name: "Checking the Jenkins default admin password"
+      Command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: batboy
+    - name: "Displaying default admin password"
+      debug: var=batboy.stdout_lines
+    - name: Go to the opt folder
+      command: chdir=/opt
+    - name: "Downloading Maven package" 
+      shell: "wget https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz"
+    - name: "Untaring the file"
+      command: tar -xvzf /opt/apache-maven-3.8.4-bin.tar.gz
+    - name: "Renaming the apache-maven-3.8.4 to maven"
+      command: mv apache-maven-3.8.4 maven 
+    - name: "Installing Git"
+      command: yum install git -y
